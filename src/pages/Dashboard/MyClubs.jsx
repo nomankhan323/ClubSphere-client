@@ -1,8 +1,10 @@
+import React from "react";
+
 const MyClubs = () => {
     return (
         <div>
             <h1 className="text-2xl font-bold">My Clubs</h1>
-            <p>Here are the clubs you have created or joined.</p>
+            <p className="mt-2">List of clubs you own or joined.</p>
         </div>
     );
 };
