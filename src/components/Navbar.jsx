@@ -1,35 +1,38 @@
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
+import ThemeToggle from "./ThemeToggle";
 
 const Navbar = () => {
     const { user, logout } = useAuth();
 
     return (
-        <nav className="p-4 bg-purple-600 text-white flex justify-between">
-            <Link to="/" className="font-bold text-xl">ClubSphere</Link>
+        <header className="shadow-sm bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+            <div className="container mx-auto flex items-center justify-between py-3 px-4">
+                <Link to="/" className="text-2xl font-bold">ClubSphere</Link>
 
-            <div className="flex gap-5 items-center">
-                <Link to="/clubs">Clubs</Link>
-                <Link to="/events">Events</Link>
+                <nav className="hidden md:flex gap-4 items-center">
+                    <NavLink to="/" className="px-3 py-1">Home</NavLink>
+                    <NavLink to="/clubs" className="px-3 py-1">Clubs</NavLink>
+                    <NavLink to="/events" className="px-3 py-1">Events</NavLink>
+                </nav>
 
-                {user && (
-                    <Link to="/dashboard">Dashboard</Link>
-                )}
-
-                {!user ? (
-                    <Link to="/login" className="bg-white text-purple-600 px-3 py-1 rounded">
-                        Login
-                    </Link>
-                ) : (
-                    <button
-                        onClick={logout}
-                        className="bg-red-500 px-3 py-1 rounded"
-                    >
-                        Logout
-                    </button>
-                )}
+                <div className="flex items-center gap-3">
+                    <ThemeToggle />
+                    {!user ? (
+                        <>
+                            <NavLink to="/login" className="px-4 py-2 bg-indigo-600 text-white rounded">Login</NavLink>
+                            <NavLink to="/register" className="px-4 py-2 bg-green-600 text-white rounded">Register</NavLink>
+                        </>
+                    ) : (
+                        <>
+                            <Link to="/dashboard" className="px-3 py-2 bg-violet-600 text-white rounded">Dashboard</Link>
+                            <button onClick={logout} className="px-3 py-2 bg-red-500 text-white rounded">Logout</button>
+                        </>
+                    )}
+                </div>
             </div>
-        </nav>
+        </header>
     );
 };
 
