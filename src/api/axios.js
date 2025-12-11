@@ -1,16 +1,16 @@
-// src/api/axios.js
 import axios from "axios";
 
-const api = axios.create({
+const axiosSecure = axios.create({
     baseURL: "http://localhost:5000/api",
 });
 
-api.interceptors.request.use((config) => {
-    const user = JSON.parse(localStorage.getItem("clubUser"));
-    if (user?.token) {
-        config.headers.Authorization = `Bearer ${user.token}`;
+// Attach Firebase Token
+axiosSecure.interceptors.request.use(async (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
 });
 
-export default api;
+export default axiosSecure;

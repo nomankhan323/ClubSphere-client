@@ -1,12 +1,7 @@
-import React from "react";
+import api from "../../api/axios";
 
-const MyClubs = () => {
-    return (
-        <div>
-            <h1 className="text-2xl font-bold">My Clubs</h1>
-            <p className="mt-2">List of clubs you own or joined.</p>
-        </div>
-    );
+const loadMyClubs = async () => {
+    const user = JSON.parse(localStorage.getItem("clubUser"));
+    const res = await api.get("/clubs");
+    setMyClubs(res.data.filter(c => c.managerEmail === user.email));
 };
-
-export default MyClubs;

@@ -1,31 +1,48 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
+import app from "../firebase/firebase.config";
+
+const auth = getAuth(app);
 
 const Login = () => {
     const [email, setEmail] = useState("");
-    const { login } = useAuth();
-    const nav = useNavigate();
+    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
-    const submit = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        login(email);
-        nav("/dashboard");
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            navigate("/dashboard");
+        } catch (err) {
+            alert(err.message);
+        }
     };
 
     return (
-        <div className="max-w-md mx-auto p-6 rounded shadow" style={{ background: "var(--card)" }}>
-            <h2 className="text-xl font-bold mb-4">Login</h2>
+        <div className="flex justify-center p-10">
+            <form onSubmit={handleLogin} className="w-96 p-5 shadow">
+                <h2 className="text-xl mb-4">Login</h2>
 
-            <form onSubmit={submit} className="space-y-3">
                 <input
-                    className="input"
+                    type="email"
                     placeholder="Email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
+                    className="w-full border p-2 mb-3"
+                    onChange={(e) => setEmail(e.target.value)}
                 />
 
-                <button type="submit" className="btn w-full">Login</button>
+                <input
+                    type="password"
+                    placeholder="Password"
+                    className="w-full border p-2 mb-3"
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <button className="bg-purple-600 text-white px-4 py-2 w-full">
+                    Login
+                </button>
             </form>
         </div>
     );
