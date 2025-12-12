@@ -1,11 +1,10 @@
 import axios from "axios";
 
-const axiosSecure = axios.create({
-    baseURL: "http://localhost:5000/api",
+const api = axios.create({
+    baseURL: import.meta.env.VITE_API_URL,
 });
 
-// Attach Firebase Token
-axiosSecure.interceptors.request.use(async (config) => {
+api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -13,4 +12,4 @@ axiosSecure.interceptors.request.use(async (config) => {
     return config;
 });
 
-export default axiosSecure;
+export default api;
