@@ -9,7 +9,7 @@ import {
     signInWithPopup,
 } from "firebase/auth";
 import app from "../firebase/firebase.config";
-import axiosSecure from "../api/axios";
+import api from "../api/axios";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -24,6 +24,7 @@ export default function AuthProvider({ children }) {
     const register = (email, password) => createUserWithEmailAndPassword(auth, email, password);
     const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
     const googleLogin = () => signInWithPopup(auth, googleProvider);
+
     const logout = async () => {
         await signOut(auth);
         localStorage.removeItem("token");
@@ -36,9 +37,8 @@ export default function AuthProvider({ children }) {
                 const token = await current.getIdToken(true);
                 localStorage.setItem("token", token);
 
-
                 try {
-                    const res = await axiosSecure.post("/users/save", {
+                    const res = await api.post("/users/save", {
                         uid: current.uid,
                         email: current.email,
                         name: current.displayName || "",
@@ -46,21 +46,27 @@ export default function AuthProvider({ children }) {
                     });
 
                     const backendUser = res.data;
+
                     setUser({
                         uid: current.uid,
                         email: current.email,
                         name: current.displayName || "",
                         photoURL: current.photoURL || "",
-                        role: backendUser?.role || "member",
+                        role: backendUser.role || "member",
                     });
-                } catch (err) {
 
-                    setUser({ uid: current.uid, email: current.email, role: "member" });
+                } catch (err) {
+                    setUser({
+                        uid: current.uid,
+                        email: current.email,
+                        role: "member",
+                    });
                 }
             } else {
                 localStorage.removeItem("token");
                 setUser(null);
             }
+
             setLoading(false);
         });
 
